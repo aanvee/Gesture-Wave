@@ -19,7 +19,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        System.load(// Load OpenCV);
+        System.load("C:\\opencv\\build\\java\\x64\\opencv_java4120.dll");
 
         VideoCapture cam = new VideoCapture(0);
 
