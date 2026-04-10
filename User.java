@@ -1,9 +1,5 @@
 package auth;
 
-/**
- * Represents a user in the system.
- * Stores username and SHA-256 hashed password.
- */
 public class User {
     private String username;
     private String hashedPassword;
