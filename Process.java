@@ -3,7 +3,8 @@ import org.opencv.core.*;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgproc.Imgproc;
-public class App {
+
+public class Process {
     static final int GESTURE_FIST = 0;
     static final int GESTURE_ONE = 1;
     static final int GESTURE_PREV = 2;
@@ -31,7 +32,8 @@ public class App {
             int gesture = detectGesture(roi);
             if (gesture == stableGesture) {
                 frameCount++;
-            } else {
+            } 
+            else {
                 stableGesture = gesture;
                 frameCount = 0;
             }
