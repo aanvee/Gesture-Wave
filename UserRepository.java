@@ -1,33 +1,10 @@
 package auth;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles all file I/O for user data.
- *
- * File format — each user occupies 4 lines:
- *   username: <value>
- *   Password: <plain_placeholder>
- *   hashed_password: <sha256_hex>
- *   --- (separator)
- *
- * Located at: users.dat in the project root folder.
- */
 public class UserRepository {
-
-    // File located in the project folder (working directory)
     private static final String FILE_PATH = "users.dat";
-
-    /**
-     * Registers a new user.
-     * Checks for duplicate usernames before writing.
-     *
-     * @param username      The desired username.
-     * @param plainPassword The plain-text password (will be hashed before storage).
-     * @return RegisterResult indicating success or the reason for failure.
-     */
     public RegisterResult registerUser(String username, String plainPassword) {
         if (username == null || username.trim().isEmpty()) {
             return RegisterResult.EMPTY_USERNAME;
@@ -36,15 +13,10 @@ public class UserRepository {
             return RegisterResult.EMPTY_PASSWORD;
         }
 
-        // Check for duplicate username
         if (usernameExists(username.trim())) {
             return RegisterResult.ALREADY_EXISTS;
         }
-
-        // Hash the password
         String hashedPassword = PasswordHasher.hash(plainPassword);
-
-        // Append the new user to the file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
             writer.write("username: " + username.trim());
             writer.newLine();
@@ -61,15 +33,6 @@ public class UserRepository {
         }
     }
 
-    /**
-     * Attempts to log in a user.
-     * Reads the file, finds the matching username line, then
-     * compares the SHA-256 hash of the supplied password with the stored hash.
-     *
-     * @param username      The username to look up.
-     * @param plainPassword The plain-text password to verify.
-     * @return LoginResult indicating success or the reason for failure.
-     */
     public LoginResult loginUser(String username, String plainPassword) {
         if (username == null || username.trim().isEmpty()) {
             return LoginResult.EMPTY_USERNAME;
@@ -85,7 +48,7 @@ public class UserRepository {
 
         String targetUsername = username.trim();
 
-        // Walk through blocks of 4 lines (username / Password / hashed_password / ---)
+       
         for (int i = 0; i + 2 < lines.size(); i++) {
             String userLine = lines.get(i);
 
@@ -93,8 +56,7 @@ public class UserRepository {
                 String storedUsername = userLine.substring("username: ".length()).trim();
 
                 if (storedUsername.equalsIgnoreCase(targetUsername)) {
-                    // Found the user — now get the hashed_password line
-                    // It is always 2 lines below the username line
+                   
                     if (i + 2 < lines.size()) {
                         String hashLine = lines.get(i + 2);
                         if (hashLine.startsWith("hashed_password: ")) {
@@ -113,9 +75,6 @@ public class UserRepository {
         return LoginResult.USER_NOT_FOUND;
     }
 
-    /**
-     * Checks whether a username already exists in the file.
-     */
     private boolean usernameExists(String username) {
         for (String line : readAllLines()) {
             if (line.startsWith("username: ")) {
@@ -128,10 +87,6 @@ public class UserRepository {
         return false;
     }
 
-    /**
-     * Reads all lines from the data file.
-     * Returns an empty list if the file does not yet exist.
-     */
     private List<String> readAllLines() {
         List<String> lines = new ArrayList<>();
         File file = new File(FILE_PATH);
@@ -148,16 +103,9 @@ public class UserRepository {
         return lines;
     }
 
-    /**
-     * Returns the absolute path of the data file (useful for display in the UI).
-     */
     public String getFilePath() {
         return new File(FILE_PATH).getAbsolutePath();
     }
-
-    // ---------------------------------------------------------------
-    // Result enumerations
-    // ---------------------------------------------------------------
 
     public enum RegisterResult {
         SUCCESS,
