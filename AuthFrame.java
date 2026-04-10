@@ -452,10 +452,6 @@ public class AuthFrame extends JFrame {
         return label;
     }
 
-    // ────────────────────────────────────────────────────────────────
-    //  Helpers
-    // ────────────────────────────────────────────────────────────────
-
     private void setStatus(JLabel label, String message, Color color) {
         label.setText(message);
         label.setForeground(color);
