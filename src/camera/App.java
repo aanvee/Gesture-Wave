@@ -1,3 +1,5 @@
+package camera;
+
 import java.util.*;
 import org.opencv.core.*;
 import org.opencv.videoio.VideoCapture;

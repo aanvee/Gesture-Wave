@@ -10,3 +10,7 @@ username: Ajay Verma
 Password: ajay123
 hashed_password: 6e26e80b2685d34e264c57754a6f8d83a936ff3ba9d02ff85473629a61d56deb
 ---
+username: x
+Password: 123456
+hashed_password: 8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92
+---
