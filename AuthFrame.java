@@ -11,7 +11,7 @@ import java.awt.geom.RoundRectangle2D;
 
 public class AuthFrame extends JFrame {
 
-    // ── Colour palette ──────────────────────────────────────────────
+   
     private static final Color BG_DARK      = new Color(13,  17,  23);
     private static final Color BG_CARD      = new Color(22,  27,  34);
     private static final Color BG_INPUT     = new Color(33,  38,  45);
@@ -46,10 +46,6 @@ public class AuthFrame extends JFrame {
 
         initComponents();
     }
-
-    // ────────────────────────────────────────────────────────────────
-    //  UI Construction
-    // ────────────────────────────────────────────────────────────────
 
     private void initComponents() {
         JPanel root = new JPanel(new BorderLayout());
@@ -115,7 +111,6 @@ public class AuthFrame extends JFrame {
         return tabs;
     }
 
-    // ── Register Panel ───────────────────────────────────────────────
 
     private JPanel buildRegisterPanel() {
         JPanel panel = new JPanel();
@@ -157,7 +152,7 @@ public class AuthFrame extends JFrame {
         return panel;
     }
 
-    // ── Login Panel ──────────────────────────────────────────────────
+   
 
     private JPanel buildLoginPanel() {
         JPanel panel = new JPanel();
@@ -204,10 +199,6 @@ public class AuthFrame extends JFrame {
         footer.add(label);
         return footer;
     }
-
-    // ────────────────────────────────────────────────────────────────
-    //  Logic Handlers
-    // ────────────────────────────────────────────────────────────────
 
     private void handleRegister() {
         String username = regUsernameField.getText().trim();
@@ -286,9 +277,6 @@ public class AuthFrame extends JFrame {
         }
     }
 
-    /**
-     * Opens a simple protected dashboard dialog after successful login.
-     */
     private void showDashboard(String username) {
         JDialog dialog = new JDialog(this, "Secure Dashboard", true);
         dialog.setSize(400, 280);
@@ -335,10 +323,6 @@ public class AuthFrame extends JFrame {
         dialog.setContentPane(p);
         dialog.setVisible(true);
     }
-
-    // ────────────────────────────────────────────────────────────────
-    //  UI Component Factories
-    // ────────────────────────────────────────────────────────────────
 
     private JLabel fieldLabel(String text) {
         JLabel label = new JLabel(text);
