@@ -269,7 +269,8 @@ public class AuthFrame extends JFrame {
                 setStatus(logStatusLabel,
                     "✔  Welcome back, " + username + "! Login successful.", SUCCESS_COLOR);
                 this.dispose();              // close login window
-                new Navigate(username); 
+                dispose();
+                javax.swing.SwingUtilities.invokeLater(() -> new Navigate(username));
                 clearFields(logUsernameField, logPasswordField);
                 break;
             case USER_NOT_FOUND:

@@ -8,7 +8,7 @@ import org.opencv.imgproc.Imgproc;
 
 public class WebcamTest {
 
-    // Variables for gesture mapping
+    // Constant Variables for gesture mapping
     static final int GESTURE_FIST = 0;
     static final int GESTURE_ONE = 1;
     static final int GESTURE_TWO = 2;
@@ -17,27 +17,17 @@ public class WebcamTest {
     // ROI coordinates (global for reuse)
     static int x1 = 300, y1 = 100;
     static int x2 = 600, y2 = 400;
-
-    
     static long lastExecutionTime = 0;
     public static void main(String[] args) {
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
         VideoCapture camera = initializeCamera();
-
         Mat frame = new Mat();
-
         while (true) {
             if (camera.read(frame)) {
-
                 processFrame(frame); // flip the frame
-
                 Mat roi = extractROI(frame);
-
-                //  Detect gesture
-                
-                drawROI(frame);
+                 drawROI(frame);
                 //  STEP 1: Detect gesture
                 int gesture = detectGesture(roi);
 
@@ -112,6 +102,8 @@ public class WebcamTest {
         HighGui.destroyAllWindows();
         System.exit(0);
     }
+
+    
     static int detectGesture(Mat roi) {
 
     Mat gray = new Mat();
@@ -150,6 +142,8 @@ public class WebcamTest {
         return 0; // no hand
     }
 }
+
+
 static void executeCommand(int gesture) {
     try {
         switch (gesture) {

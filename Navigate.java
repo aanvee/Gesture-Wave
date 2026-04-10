@@ -6,7 +6,7 @@ import java.awt.Font;
 
 public class Navigate {
 	
-	JFrame frame;
+	
 	public Navigate(String username) 
 	{
 	
@@ -49,9 +49,33 @@ public class Navigate {
         gesturePanel.add(new JLabel("Status:IDLE"));
         gesturePanel.add(new JLabel("Cooldown: Ready"));
         gesturePanel.add(new JLabel("Confidence: 0%"));
-        controlPanel.add(new JButton("Start Camera"));
-        controlPanel.add(new JButton("Stop Camera"));
-        controlPanel.add(new JButton("Reset"));
+        JButton startBtn = new JButton("Start Camera");
+        JButton stopBtn = new JButton("Stop Camera");
+        JButton resetBtn = new JButton("Reset");
+
+        startBtn.addActionListener(e -> {
+            try {
+            	new ProcessBuilder("java", "-cp", ".", "camera.App").start();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        stopBtn.addActionListener(e -> {
+            try {
+                Runtime.getRuntime().exec("taskkill /F /IM java.exe");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        resetBtn.addActionListener(e -> {
+            System.out.println("Reset clicked");
+        });
+
+        controlPanel.add(startBtn);
+        controlPanel.add(stopBtn);
+        controlPanel.add(resetBtn);
         
         panel2.add(cameraPanel);
         panel2.add(gesturePanel);
