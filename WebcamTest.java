@@ -8,13 +8,11 @@ import org.opencv.imgproc.Imgproc;
 
 public class WebcamTest {
 
-    // Constant Variables for gesture mapping
     static final int GESTURE_FIST = 0;
     static final int GESTURE_ONE = 1;
     static final int GESTURE_TWO = 2;
     static final int GESTURE_PALM = 5;
     static int lastGesture = -1;
-    // ROI coordinates (global for reuse)
     static int x1 = 300, y1 = 100;
     static int x2 = 600, y2 = 400;
     static long lastExecutionTime = 0;
@@ -28,10 +26,7 @@ public class WebcamTest {
                 processFrame(frame); // flip the frame
                 Mat roi = extractROI(frame);
                  drawROI(frame);
-                //  STEP 1: Detect gesture
                 int gesture = detectGesture(roi);
-
-                //  STEP 2: Control execution (IMPORTANT)
                if (gesture != lastGesture && canExecute()) {
                     executeCommand(gesture);
                     lastGesture = gesture;
@@ -46,7 +41,6 @@ public class WebcamTest {
         cleanup(camera);
     }
 
-    // Initialize camera
     static VideoCapture initializeCamera() {
         VideoCapture camera = new VideoCapture(0);
 
@@ -59,17 +53,13 @@ public class WebcamTest {
         return camera;
     }
 
-    // Flip frame
     static void processFrame(Mat frame) {
         Core.flip(frame, frame, 1);
     }
 
-    // Extract ROI
     static Mat extractROI(Mat frame) {
         return frame.submat(y1, y2, x1, x2);
     }
-
-    // Draw ROI box
     static void drawROI(Mat frame) {
         Imgproc.rectangle(
                 frame,
