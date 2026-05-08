@@ -14,3 +14,11 @@ username: x
 Password: 123456
 hashed_password: 8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92
 ---
+username: a
+Password: 12345aa
+hashed_password: 2b5ed015554ddc603fab8124b13e40b254eb053634658fda4183ef86dc5cc263
+---
+username: aanvi
+Password: 123456
+hashed_password: 8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92
+---

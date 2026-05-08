@@ -1,114 +1,157 @@
 package hand;
+
+import camera.CameraListener;
+import camera.CameraProcessor;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Font;
+import java.awt.image.BufferedImage;
 
+public class Navigate implements CameraListener {
 
-public class Navigate {
-	
-	
-	public Navigate(String username) 
-	{
-	
-	
-	
-	
-		JFrame frame=new JFrame("Hand Gesture Recognition");
-		frame.setSize(1920, 1080);
-		frame.setLayout(new BorderLayout());
-        
-        JPanel panel1=new JPanel();
-        /*JLabel welcomeLabel = new JLabel("Welcome, " + username);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        panel1.add(welcomeLabel);*/
-        
-        JLabel label = new JLabel("Gesture Wave");
-        
-        label.setFont(new Font("Times New Roman", Font.BOLD, 28));
-        panel1.add(label);
-        
-        frame.add(panel1, BorderLayout.NORTH);
-        
-        JPanel panel2=new JPanel(new GridLayout(1, 3));
-        
-        JPanel cameraPanel = new JPanel();
-        JPanel gesturePanel = new JPanel();
-        JPanel controlPanel = new JPanel();
-        
+    private final JFrame frame;
+    private final JLabel cameraView;
+    private final JLabel gestureLabel;
+    private final JLabel statusLabel;
+    private final JTextArea logArea;
+    private CameraProcessor processor;
+
+    public Navigate(String username) {
+        frame = new JFrame("Hand Gesture Recognition");
+        frame.setSize(1200, 800);
+        frame.setLayout(new BorderLayout());
+
+        // Header
+        JPanel headerPanel = new JPanel();
+        JLabel titleLabel = new JLabel("Gesture Wave - Welcome, " + username);
+        titleLabel.setFont(new Font("Times New Roman", Font.BOLD, 28));
+        headerPanel.add(titleLabel);
+        frame.add(headerPanel, BorderLayout.NORTH);
+
+        // Main Content
+        JPanel mainPanel = new JPanel(new GridLayout(1, 3));
+
+        // 1. Camera Feed
+        JPanel cameraPanel = new JPanel(new BorderLayout());
         cameraPanel.setBorder(BorderFactory.createTitledBorder("Camera Feed"));
-        cameraPanel.setBackground(Color.LIGHT_GRAY);
+        cameraPanel.setBackground(Color.BLACK);
+        cameraView = new JLabel("Camera Ready", SwingConstants.CENTER);
+        cameraView.setForeground(Color.WHITE);
+        cameraPanel.add(cameraView, BorderLayout.CENTER);
 
+        // 2. Gesture Info
+        JPanel gesturePanel = new JPanel();
+        gesturePanel.setLayout(new BoxLayout(gesturePanel, BoxLayout.Y_AXIS));
         gesturePanel.setBorder(BorderFactory.createTitledBorder("Gesture Info"));
         gesturePanel.setBackground(Color.WHITE);
-
-        controlPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
-        controlPanel.setBackground(Color.CYAN);
         
-        cameraPanel.add(new JLabel("Camera Placeholder"));
-        gesturePanel.add(new JLabel("Gesture: NONE"));
-        gesturePanel.add(new JLabel("Status:IDLE"));
-        gesturePanel.add(new JLabel("Cooldown: Ready"));
-        gesturePanel.add(new JLabel("Confidence: 0%"));
+        gestureLabel = new JLabel("Gesture: NONE");
+        statusLabel = new JLabel("Status: IDLE");
+        JLabel cooldownLabel = new JLabel("Cooldown: Ready");
+        JLabel confidenceLabel = new JLabel("Confidence: 0%");
+        
+        Font labelFont = new Font("Segoe UI", Font.BOLD, 16);
+        gestureLabel.setFont(labelFont);
+        statusLabel.setFont(labelFont);
+        
+        gesturePanel.add(Box.createVerticalStrut(20));
+        gesturePanel.add(gestureLabel);
+        gesturePanel.add(Box.createVerticalStrut(10));
+        gesturePanel.add(statusLabel);
+        gesturePanel.add(Box.createVerticalStrut(10));
+        gesturePanel.add(cooldownLabel);
+        gesturePanel.add(Box.createVerticalStrut(10));
+        gesturePanel.add(confidenceLabel);
+
+        // Footer / Logs
+        JPanel bottomContainer = new JPanel(new GridLayout(1, 2));
+
+        JPanel gestureMapping = new JPanel();
+        gestureMapping.setBorder(BorderFactory.createTitledBorder("Gesture Mapping"));
+        gestureMapping.add(new JLabel("<html>1 Finger: NEXT<br>2 Fingers: PREV<br>3 Fingers: MUTE<br>4+ Fingers: VOL UP</html>"));
+
+        JPanel logsPanel = new JPanel(new BorderLayout());
+        logsPanel.setBorder(BorderFactory.createTitledBorder("Logs / Status"));
+        logArea = new JTextArea(8, 30);
+        logArea.setEditable(false);
+        logsPanel.add(new JScrollPane(logArea), BorderLayout.CENTER);
+
+        // Controls
+        JPanel controlPanel = new JPanel();
+        controlPanel.setLayout(new FlowLayout());
+        controlPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
+        controlPanel.setBackground(new Color(240, 240, 240));
+
         JButton startBtn = new JButton("Start Camera");
         JButton stopBtn = new JButton("Stop Camera");
         JButton resetBtn = new JButton("Reset");
 
         startBtn.addActionListener(e -> {
-            try {
-            	new ProcessBuilder("java", "-cp", ".;lib/opencv-4120.jar", "camera.App").start();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (processor == null) {
+                processor = new CameraProcessor(this);
+                processor.start();
+                onStatusUpdate("Starting camera system...");
             }
         });
 
         stopBtn.addActionListener(e -> {
-            try {
-                Runtime.getRuntime().exec("taskkill /F /IM java.exe");
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (processor != null) {
+                processor.stop();
+                processor = null;
+                cameraView.setIcon(null);
+                cameraView.setText("Camera Stopped");
+                onStatusUpdate("System stopped.");
             }
         });
 
         resetBtn.addActionListener(e -> {
-            System.out.println("Reset clicked");
+            logArea.setText("");
+            onStatusUpdate("Logs cleared.");
         });
 
         controlPanel.add(startBtn);
         controlPanel.add(stopBtn);
         controlPanel.add(resetBtn);
-        
-        panel2.add(cameraPanel);
-        panel2.add(gesturePanel);
-        panel2.add(controlPanel);
-        
-        frame.add(panel2, BorderLayout.CENTER);
-        
-        
-        JPanel bottomContainer=new JPanel(new GridLayout(1, 2));
-        
-        JPanel gestureMapping = new JPanel();
-        
-        gestureMapping.setBorder(BorderFactory.createTitledBorder("Gesture->Action Mapping"));
-        gestureMapping.setBackground(Color.LIGHT_GRAY);
-        
-        JPanel logsPanel = new JPanel();
-        logsPanel.setBorder(BorderFactory.createTitledBorder("Logs / Status"));
-        logsPanel.setBackground(Color.WHITE);
-        JTextArea logArea = new JTextArea(5, 30);
-        logArea.setEditable(false);
-        logsPanel.add(new JScrollPane(logArea));
-        
+
+        mainPanel.add(cameraPanel);
+        mainPanel.add(gesturePanel);
+        mainPanel.add(controlPanel);
+        frame.add(mainPanel, BorderLayout.CENTER);
+
         bottomContainer.add(gestureMapping);
         bottomContainer.add(logsPanel);
-        
         frame.add(bottomContainer, BorderLayout.SOUTH);
-        
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       
-        frame.setVisible(true);
-        
-	}
-	
-	
 
-}
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+
+    @Override
+    public void onFrameProcessed(BufferedImage image) {
+        SwingUtilities.invokeLater(() -> {
+            cameraView.setText("");
+            cameraView.setIcon(new ImageIcon(image));
+        });
+    }
+
+    @Override
+    public void onGestureDetected(String gesture, int fingerCount) {
+        SwingUtilities.invokeLater(() -> {
+            gestureLabel.setText("Gesture: " + gesture);
+            if (!gesture.equals("NONE")) {
+                logArea.append("Detected: " + gesture + "\n");
+                logArea.setCaretPosition(logArea.getDocument().getLength());
+            }
+        });
+    }
+
+    @Override
+    public void onStatusUpdate(String message) {
+        SwingUtilities.invokeLater(() -> {
+            statusLabel.setText("Status: " + message);
+            logArea.append("SYSTEM: " + message + "\n");
+            logArea.setCaretPosition(logArea.getDocument().getLength());
+        });
+    }
+}
